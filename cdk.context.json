@@ -1,6 +1,6 @@
 {
   "@aws-cdk/core:enableStackNameDuplicates": "true",
-  "system_name": "yamarikuS3KMSEncrypt",
+  "system_name": "S3KMSEncrypt",
   "env": "test",
   "aws-cdk:enableDiffNoFail": "true"
 }

@@ -31,19 +31,24 @@ export class IAMRoleStack extends cdk.Stack {
   }
 
   attachPolicy(key: kms.Key, bucket: s3.Bucket) {
+    // allow list buckets
+    const list_bucket_policy_statement = new iam.PolicyStatement(
+      {
+        actions: [
+          "s3:ListAllMyBuckets"
+        ],
+        effect: iam.Effect.ALLOW,
+        resources: ["*"],
+      }
+    )
+    this.kms_allowed_role.addToPolicy(list_bucket_policy_statement)
+    this.kms_denied_role.addToPolicy(list_bucket_policy_statement)
+
     // [allowed_role] Allow s3 access and kms key access
     bucket.grantReadWrite(this.kms_allowed_role)
+
     // [denied_role] Allow s3 action only
-    const denied_policy_statements = [
-      new iam.PolicyStatement(
-        {
-          actions: [
-            "s3:ListAllMyBuckets"
-          ],
-          effect: iam.Effect.ALLOW,
-          resources: ["*"],
-        }
-      ),
+    const denied_policy_statement =
       new iam.PolicyStatement(
         {
           actions: [
@@ -55,14 +60,10 @@ export class IAMRoleStack extends cdk.Stack {
             "s3:Abort*"
           ],
           effect: iam.Effect.ALLOW,
-          resources: [bucket.bucketArn, bucket.bucketArn+"/*"],
+          resources: [bucket.bucketArn, bucket.bucketArn + "/*"],
         }
-      ),
-    ]
-
-    for (let statement of denied_policy_statements) {
-      this.kms_denied_role.addToPolicy(statement)
-    }
+      )
+    this.kms_denied_role.addToPolicy(denied_policy_statement)
   }
 
 }

@@ -35,25 +35,18 @@ kms_stack.key,
     env: stack_env
   })
 const role_stack = new IAMRoleStack(app, 'iamrole',
+  `${name_prefix}-${system_name}-${system_env}`,
   {
     stackName: iam_stack_name,
     env: stack_env
   })
-// const s3_deployment = new S3DeploymentStack(app, 's3deployment',
-//   s3_bucket_name, kms_key_stack.key,
-//   {
-//     stackName: s3_bucket_name + '-deploy',
-//     env: stack_env
-//   })
 
 // Define stack dependencies
 s3_stack.addDependency(kms_stack, 'Using encryption key')
 role_stack.addDependency(kms_stack, 'Using encryption key for s3bucket')
-// s3_deployment.addDependency(kms_stack, 'Deploy contents into s3 bucket')
 
-// attach s3 access policy to iam roles
-s3_stack.bucket.grantReadWrite(role_stack.kms_allowed_role)
-s3_stack.bucket.grantReadWrite(role_stack.kms_denied_role)
+// attach policy to iam roles
+role_stack.attachPolicy(kms_stack.key, s3_stack.bucket)
 
 // Tagging
 cdk.Tag.add(kms_stack, "system", system_name)
@@ -62,5 +55,15 @@ cdk.Tag.add(s3_stack, "system", system_name)
 cdk.Tag.add(s3_stack, "env", system_env)
 cdk.Tag.add(role_stack, "system", system_name)
 cdk.Tag.add(role_stack, "env", system_env)
+
+// Add s3deployment
+// const s3_deployment = new S3DeploymentStack(app, 's3deployment',
+//   s3_bucket_name, kms_key_stack.key,
+//   {
+//     stackName: s3_bucket_name + '-deploy',
+//     env: stack_env
+//   })
+// s3_deployment.addDependency(kms_stack, 'Deploy contents into s3 bucket')
+
 // cdk.Tag.add(s3_deployment, "system", system_name)
 // cdk.Tag.add(s3_deployment, "env", system_env)

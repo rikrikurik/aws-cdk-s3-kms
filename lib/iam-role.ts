@@ -7,24 +7,32 @@ export class IAMRoleStack extends cdk.Stack {
   public kms_allowed_role: iam.Role;
   public kms_denied_role: iam.Role;
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, name_prefix: string,
+    props?: cdk.StackProps) {
     super(scope, id, props);
 
     // Create IAM role
+    const kms_allowed_role_name = `${name_prefix}-kms-allowed-role`
     this.kms_allowed_role = new iam.Role(
-      this, 'test role', {
-        assumedBy: new iam.AccountPrincipal(this.account),
-        description: 'IAM Role that allowd to use KMS key'
-      }
+      this, kms_allowed_role_name, {
+      assumedBy: new iam.AccountPrincipal(this.account),
+      description: 'IAM Role that allowd to use KMS key',
+      roleName: kms_allowed_role_name
+    }
     )
+    const kms_denied_role_name = `${name_prefix}-kms-denied-role`
     this.kms_denied_role = new iam.Role(
-      this, 'test role 2', {
-        assumedBy: new iam.AccountPrincipal(this.account),
-        description: 'IAM Role that prohibited to use KMS key'
-      }
+      this, kms_denied_role_name, {
+      assumedBy: new iam.AccountPrincipal(this.account),
+      description: 'IAM Role that prohibited to use KMS key',
+      roleName: kms_denied_role_name
+    }
     )
-
-    // Attach kms key policy to allowed_role
-    
   }
+
+  attachPolicy(key: kms.Key, bucket: s3.Bucket) {
+    bucket.grantReadWrite(this.kms_allowed_role)
+    bucket.grantReadWrite(this.kms_denied_role)
+  }
+
 }

@@ -15,7 +15,7 @@ export class S3DeploymentStack extends cdk.Stack {
     )
 
     // Deploy test data
-    const deploy_source = s3deploy.Source.asset(`s3_contents`)
+    const deploy_source = s3deploy.Source.asset(`s3assets`)
     const deploy_contents = new s3deploy.BucketDeployment(
       this, bucket_name + `-deploy`,
       {

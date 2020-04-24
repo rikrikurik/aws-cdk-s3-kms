@@ -1,5 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import s3 = require('@aws-cdk/aws-s3');
+import s3deploy = require('@aws-cdk/aws-s3-deployment');
+import s3assets = require('@aws-cdk/aws-s3-assets');
 import kms = require('@aws-cdk/aws-kms');
 
 export class S3BucketStack extends cdk.Stack {
@@ -20,5 +22,17 @@ export class S3BucketStack extends cdk.Stack {
         removalPolicy: cdk.RemovalPolicy.DESTROY
       }
     )
+
+    // Deploy test data
+    const deploy_contents = new s3deploy.BucketDeployment(
+      this, `${bucket_name}-deploy`,
+      {
+        destinationBucket: this.bucket,
+        sources: s3deploy.Source.asset(`../s3_contents`)
+      }
+    )
+
   }
+
 }
+// s3assets.Asset(this, `${bucket_name}-assets`, { path: '' })

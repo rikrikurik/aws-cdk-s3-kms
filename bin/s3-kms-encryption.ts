@@ -14,7 +14,7 @@ const system_name = app.node.tryGetContext("system_name")
 const system_env = app.node.tryGetContext("env")
 const kms_key_name = `${name_prefix}-${system_name}-${system_env}-key`
 const s3_bucket_name = `${name_prefix}-${system_name}-${system_env}-bucket`.toLowerCase()
-const iam_stack_name = `${name_prefix}-${system_name}-${system_env}-roles`.toLowerCase()
+const iam_stack_name = `${name_prefix}-${system_name}-${system_env}-roles`
 
 // Define stack env
 const stack_env = {

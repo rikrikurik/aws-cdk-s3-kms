@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import { KmsKeyStack } from '../lib/kms-key';
 import { S3BucketStack } from '../lib/s3-bucket';
+import { S3DeploymentStack } from '../lib/s3-deployment';
 
 const app = new cdk.App();
 
@@ -28,3 +29,7 @@ cdk.Tag.add(kms_key_stack, "system", system_name)
 cdk.Tag.add(kms_key_stack, "env", system_env)
 cdk.Tag.add(s3_bucket_stack, "system", system_name)
 cdk.Tag.add(s3_bucket_stack, "env", system_env)
+
+// Create S3 content deployment stack
+const s3_deployment = new S3DeploymentStack(app, 's3deployment',
+  s3_bucket_name, kms_key_stack.key)

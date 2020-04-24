@@ -12,7 +12,7 @@ export class IAMRoleStack extends cdk.Stack {
     super(scope, id, props);
 
     // Create IAM role
-    const kms_allowed_role_name = `${name_prefix}-kms-allowed-role`
+    const kms_allowed_role_name = `${name_prefix}-kmsallowedrole`
     this.kms_allowed_role = new iam.Role(
       this, kms_allowed_role_name, {
       assumedBy: new iam.AccountPrincipal(this.account),
@@ -20,7 +20,7 @@ export class IAMRoleStack extends cdk.Stack {
       roleName: kms_allowed_role_name
     }
     )
-    const kms_denied_role_name = `${name_prefix}-kms-denied-role`
+    const kms_denied_role_name = `${name_prefix}-kmsdeniedrole`
     this.kms_denied_role = new iam.Role(
       this, kms_denied_role_name, {
       assumedBy: new iam.AccountPrincipal(this.account),
@@ -31,8 +31,10 @@ export class IAMRoleStack extends cdk.Stack {
   }
 
   attachPolicy(key: kms.Key, bucket: s3.Bucket) {
+    // [allowed_role] Allow s3 access and kms key access
     bucket.grantReadWrite(this.kms_allowed_role)
-    bucket.grantReadWrite(this.kms_denied_role)
+    // [denied_role] Allow s3 action only  
+
   }
 
 }

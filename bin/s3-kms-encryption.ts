@@ -20,6 +20,9 @@ const s3_bucket_stack = new S3BucketStack(app, 's3bucket', s3_bucket_name,
   kms_key_stack.key,
   { stackName: s3_bucket_name })
 
+// Define stack dependencies
+s3_bucket_stack.addDependency(kms_key_stack, 'Using encryption key')
+
 // Tagging
 cdk.Tag.add(kms_key_stack, "system", system_name)
 cdk.Tag.add(kms_key_stack, "env", system_env)

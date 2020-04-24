@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@aws-cdk/aws-kms": "^1.34.1",
+    "@aws-cdk/aws-s3": "^1.34.1",
+    "@aws-cdk/aws-s3-deployment": "^1.34.1",
     "@aws-cdk/core": "1.34.1",
     "source-map-support": "^0.5.16"
   }
